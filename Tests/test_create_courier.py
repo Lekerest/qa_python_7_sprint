@@ -63,21 +63,21 @@ class TestCreateCourier:
     @allure.title("Проверка кода ответа при успешной регистрации")
     @allure.description("Проверка, что при успешной регистрации возвращается статус 201")
     def test_status_code_registration(self, create_courier):
-        response, [login, password, first_name] = create_courier
+        response, _ = create_courier
         assert response.status_code == 201, "Курьер не зарегистрировался"
 
 ################## успешный запрос возвращает {"ok":true}; ##################
     @allure.title("Проверка тела ответа при успешной регистрации")
     @allure.description("Проверка, что при успешной регистрации возвращается JSON {'ok': true}")
     def test_registration_response_answer(self, create_courier):
-        response, [login, password, first_name] = create_courier
+        response, _ = create_courier
         assert response.json() == {"ok": True}, "Ответ сервера не соответствует ожидаемому {'ok': true}"
 
 ################## если создать пользователя с логином, который уже есть, возвращается ошибка. ##################
     @allure.title("Ошибка при регистрации с уже существующим логином")
     @allure.description("Проверка, что при повторной регистрации с тем же логином возвращается ошибка 409")
     def test_error_with_identical_login(self, create_courier):
-        response, [login, password, first_name] = create_courier
+        response, [login, _, _] = create_courier
         payload = {
             "login": login,
             "password": CourierHelper.generate_random_string(10),
