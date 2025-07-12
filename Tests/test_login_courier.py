@@ -49,7 +49,7 @@ class TestLoginCourier:
     @allure.description("Проверка ошибки 400 при отсутствии поля 'password'")
     def test_login_without_password(self):
         payload = {"login": self.login}
-        response = requests.post(f"{BASE_URL}/courier/login", json=payload)
+        response = requests.post(f"{BASE_URL}/courier/login", json=payload, timeout=5)
         assert response.status_code == 400, f"Ожидался 400, получен {response.status_code}. Нет поля 'password'."
 
     @allure.title("Ошибка авторизации несуществующего курьера")
