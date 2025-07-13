@@ -61,7 +61,7 @@ class TestLoginCourier:
     def test_login_without_password(self):
         payload = {"login": self.login}
         with allure.step("Отправка запроса авторизации без пароля"):
-            response = requests.post(f"{BASE_URL}/courier/login", json=payload)
+            response = requests.post(f"{BASE_URL}/courier/login", json=payload, timeout=5)
         with allure.step("Проверка, что возвращается ошибка 400"):
             assert response.status_code == 400, f"Ожидался 400, получен {response.status_code}. Нет поля 'password'."
 
