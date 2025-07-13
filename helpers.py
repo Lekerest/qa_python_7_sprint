@@ -1,8 +1,13 @@
 import requests
 import random
 import string
+import logging
 
 BASE_URL = 'https://qa-scooter.praktikum-services.ru/api/v1'
+
+# Настройка логгера
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logger = logging.getLogger(__name__)
 
 
 class CourierHelper:
@@ -29,6 +34,9 @@ class CourierHelper:
         response = requests.post(f'{BASE_URL}/courier', data=payload)
         if response.status_code == 201:
             cls.created_couriers.append((login, password))
+            logger.info(f"Курьер создан: login={login}")
+        else:
+            logger.warning(f"Не удалось создать курьера: статус {response.status_code}, ответ: {response.text}")
         return response, [login, password, first_name]  # возвращаем и response, и данные
 
     @classmethod
@@ -45,8 +53,10 @@ class CourierHelper:
                 if courier_id:
                     delete_response = requests.delete(f"{BASE_URL}/courier/{courier_id}")
                     if delete_response.status_code != 200:
-                        print(f"Ошибка удаления курьера ID {courier_id}: {delete_response.status_code}")
+                        logger.error(f"Ошибка удаления курьера ID {courier_id}: статус {delete_response.status_code}")
+                    else:
+                        logger.info(f"Курьер с ID {courier_id} удалён успешно.")
                 else:
-                    print(f"Не удалось получить ID курьера {login}")
+                    logger.error(f"Не удалось получить ID курьера {login}")
             else:
-                print(f"Не удалось авторизовать курьера {login} для удаления")
+                logger.error(f"Не удалось авторизовать курьера {login} для удаления: статус {login_response.status_code}")

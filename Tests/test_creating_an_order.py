@@ -1,36 +1,28 @@
 import pytest
 import requests
 import allure
+from data import Data
 
 BASE_URL = 'https://qa-scooter.praktikum-services.ru/api/v1'
 
-class TestCreateOrder:
 
-    base_order = {
-        "firstName": "Naruto",
-        "lastName": "Uchiha",
-        "address": "Konoha, 142 apt.",
-        "metroStation": 4,
-        "phone": "+7 800 355 35 35",
-        "rentTime": 5,
-        "deliveryDate": "2020-06-06",
-        "comment": "Saske, come back to Konoha",
-    }
+class TestCreateOrder:
 
     @pytest.mark.parametrize("color", [
         ["BLACK"],
         ["GREY"],
         ["BLACK", "GREY"],
-        [],])
-
+        [],
+    ])
     @allure.title("Создание заказа с цветом: {color}")
     @allure.description("Проверка, что заказ можно создать с разными значениями цвета")
     def test_order_with_colour(self, color):
-        order_data = self.base_order.copy()
-        # noinspection PyTypeChecker
+        order_data = Data.base_order.copy()
         order_data["color"] = color
 
-        response = requests.post(f"{BASE_URL}/orders", json=order_data)
+        with allure.step(f"Отправка запроса на создание заказа с цветом: {color}"):
+            response = requests.post(f"{BASE_URL}/orders", json=order_data)
 
-        assert response.status_code == 201
-        assert "track" in response.json()
+        with allure.step("Проверка, что статус ответа 201 и в ответе есть поле 'track'"):
+            assert response.status_code == 201, f"Ожидался 201, получен {response.status_code}"
+            assert "track" in response.json(), f"В ответе отсутствует поле 'track': {response.json()}"
