@@ -1,0 +1,2 @@
+[32mINFO    [0m helpers:helpers.py:37 Курьер создан: login=qholwwdeba
+[32mINFO    [0m root:conftest.py:74 Заказ с треком 765426 успешно отменён.
